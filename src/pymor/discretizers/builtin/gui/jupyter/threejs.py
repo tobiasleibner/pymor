@@ -62,6 +62,9 @@ class Renderer(widgets.VBox):
         self.grid = grid
         self.codim = codim
         self.vmin, self.vmax = vmin, vmax
+        self.max_step = len(U)
+        self.action = None
+        self.tracks = []
 
         subentities, coordinates, self.entity_map = flatten_grid(grid)
 
@@ -101,7 +104,7 @@ class Renderer(widgets.VBox):
         self.buffer_faces    = p3js.BufferAttribute(indices.astype(np.uint32).ravel(), normalized=False)
         self.meshes = []
         self._setup_scene(bounding_box, render_size)
-        if config.is_nbconvert():
+        if True:#config.is_nbconvert():
             # need to ensure all data is loaded before cell execution is over
             class LoadDummy:
                 def done(self): return True
@@ -113,7 +116,7 @@ class Renderer(widgets.VBox):
         self._last_idx = None
         super().__init__(children=[self.renderer, ])
 
-    def _get_mesh(self, u):
+    def _get_mesh(self, u, step):
         if self.codim == 2:
             u = u[self.entity_map]
         elif self.grid.reference_element == triangle:
@@ -128,7 +131,7 @@ class Renderer(widgets.VBox):
                 data=data
             )
         )
-        mesh = p3js.Mesh(geometry=geo, material=self.material)
+        mesh = p3js.Mesh(name=f'mesh_{step}', geometry=geo, material=self.material)
         mesh.visible = False
         # translate to origin where the camera is looking by default, avoids camera not updating in nbconvert run
         mesh.position = tuple(p-i for p,i in zip(mesh.position, self.mesh_center))
@@ -139,18 +142,27 @@ class Renderer(widgets.VBox):
 
     def _load_data(self, data):
         for u in data:
-            m = self._get_mesh(u)
+            step = len(self.meshes)
+            m = self._get_mesh(u, step)
             self.scene.add(m)
-            if len(self.meshes) == 0:
-                m.visible = True
+            m.visible = step == 0
             self.meshes.append(m)
+            values = [int(s == step) for s in range(self.max_step)]
+            self.tracks.append(p3js.NumberKeyframeTrack(name=f'scene/mesh_{step}.visible',
+                                                          times=list(range(self.max_step)),
+                                                         interpolation='InterpolateDiscrete',
+                                                          values=values))
+
+        self.mixer = p3js.AnimationMixer(self.scene)
+        self.action = p3js.AnimationAction(self.mixer,
+                                           p3js.AnimationClip(tracks=self.tracks, duration=self.max_step),
+                                           self.scene)
 
     def goto(self, idx):
         if idx != self._last_idx:
             self.meshes[idx].visible = True
             if self._last_idx:
                 self.meshes[self._last_idx].visible = False
-            self.renderer.render(self.scene, self.cam)
             self._last_idx = idx
 
     def freeze_camera(self, freeze=True):
@@ -179,7 +191,7 @@ class Renderer(widgets.VBox):
         self.cam = p3js.PerspectiveCamera(aspect=render_size[0] / render_size[1],
                                           position=[0, 0, 0 + self.camera_distance])
         self.light = p3js.AmbientLight(color='white', intensity=1.0)
-        self.scene = p3js.Scene(children=[self.cam, self.light], background='white')
+        self.scene = p3js.Scene(name='scene', children=[self.cam, self.light], background='white')
         self.controller = p3js.OrbitControls(controlling=self.cam, position=[0, 0, 0 + self.camera_distance],
                                              target=[0,0,0])
         self.freeze_camera(True)
@@ -261,10 +273,12 @@ class ThreeJSPlot(widgets.VBox):
             def _goto_idx(idx):
                 for c in self.renderer:
                     c.goto(idx)
-            play = Play(min=0, max=size - 1, step=1, value=0, description='Timestep:')
-            interact(idx=play).widget(_goto_idx)
+            rr = self.renderer[0]
+            play = rr.action
             slider = IntSlider(min=0, max=size - 1, step=1, value=0, description='Timestep:')
-            widgets.jslink((play, 'value'), (slider, 'value'))
+            # this currently seems to work one way. Slider changes to do trigger UI update
+            widgets.jslink((play.mixer, 'time'), (slider, 'value'))
+            # add a speed to action.timeScale mapping
             controls = widgets.HBox([play, slider])
             children.append(controls)
 
@@ -338,4 +352,4 @@ def visualize_py3js(grid, U, bounding_box=([0, 0], [1, 1]), codim=2, title=None,
 
     plot = ThreeJSPlot(grid, color_map, title, bounding_box, codim, U, vmins, vmaxs, separate_colorbars, size)
     IPython.display.display(plot)
-    return None
+    return plot
