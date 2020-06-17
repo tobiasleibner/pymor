@@ -8,7 +8,8 @@ from io import BytesIO
 
 import IPython
 import numpy as np
-from ipywidgets import IntSlider, interact, widgets, Play, Layout
+from IPython.core.display import display
+from ipywidgets import IntSlider, interact, widgets, Play, Layout, HTML
 import pythreejs as p3js
 from matplotlib.cm import get_cmap
 
@@ -157,6 +158,7 @@ class Renderer(widgets.VBox):
         self.action = p3js.AnimationAction(self.mixer,
                                            p3js.AnimationClip(tracks=self.tracks, duration=self.max_step),
                                            self.scene)
+        display(HTML('<script>Jupyter.menubar.actions._actions["widgets:save-with-widgets"].handler()</script>'))
 
     def goto(self, idx):
         if idx != self._last_idx:
@@ -281,6 +283,7 @@ class ThreeJSPlot(widgets.VBox):
             # add a speed to action.timeScale mapping
             controls = widgets.HBox([play, slider])
             children.append(controls)
+
 
         super().__init__(children=children)
 
