@@ -8,25 +8,25 @@ some questions which might arise.
 
 ## Contribution process
 
-When you have written some code you want to contribute to 
+When you have written some code you want to contribute to
 pyMOR, the first thing you should do is to ensure that
 your code is contained in one or several [git](https://git-scm.com/)
 commits which have commit messages appropriately describing
 their content.
 
-All new code and all code changes enter pyMOR by way of a 
+All new code and all code changes enter pyMOR by way of a
 [pull request](https://help.github.com/articles/creating-a-pull-request/)
 from a branch on [GitHub](https://github.com/pymor/pymor).
 Therefore the recommended way to send us your code is to create a
 [fork](https://guides.github.com/activities/forking/) of pyMOR
-on GitHub (if you do not have one already) and push your commits into a branch 
+on GitHub (if you do not have one already) and push your commits into a branch
 containing the code and create a pull request for it.
 Alternatively, you may send patches to our
 [mailinglist](http://listserv.uni-muenster.de/mailman/listinfo/pymor-dev)
 that have been created using `git format-patch`.
 
 Once we have received your code, it will be reviewed and
-discussed with you by pyMOR's 
+discussed with you by pyMOR's
 [main developers](#becoming-a-main-developer). If it is found suitable
 for inclusion into pyMOR, your code will be merged into pyMOR's
 main repository. We may also make suggestions how to modify
@@ -40,16 +40,16 @@ for help at any time.
 ## License
 
 By submitting contributions to pyMOR, you give us the right to
-publish your code under pyMOR's 
+publish your code under pyMOR's
 [license](https://github.com/pymor/pymor/blob/master/LICENSE.txt).
 In order to do so, you need to have the copyright for your code.
-If you do not hold the copyright, you have to ask the copyright 
+If you do not hold the copyright, you have to ask the copyright
 holder for permission to contribute the code to pyMOR.
 
 pyMOR's license ([2-clause BSD](https://opensource.org/licenses/BSD-2-Clause))
 is a permissive open source license without
 [copyleft](https://en.wikipedia.org/wiki/Copyleft). In particular,
-be aware that this license allows commercial use of your code when the 
+be aware that this license allows commercial use of your code when the
 license including the preceding copyright notice is reproduced.
 On the other hand, this will also enable you to create a commercial
 project based on pyMOR (including the parts of pyMOR written by others).
@@ -82,16 +82,16 @@ history of the project.
 
 ## Coding style
 
-pyMOR follows the coding style of 
+pyMOR follows the coding style of
 [PEP8](https://www.python.org/dev/peps/pep-0008/) apart from a
-few exceptions. Configurations for the 
-[PEP8](https://pypi.python.org/pypi/pep8) and 
+few exceptions. Configurations for the
+[PEP8](https://pypi.python.org/pypi/pep8) and
 [flake8](https://pypi.python.org/pypi/flake8) code
-checkers are contained in 
+checkers are contained in
 [setup.cfg](https://github.com/pymor/pymor/blob/master/setup.cfg).
 
 As an additional rule when calling functions, positional
-arguments should genereally be passed as positional arguments
+arguments should generally be passed as positional arguments
 whereas keyword arguments should be passed as keyword arguments.
 This will make your code less likely to break, when the called
 function is extended.
@@ -102,12 +102,12 @@ be sufficiently well documented.
 
 ## Becoming a main developer
 
-pyMOR's main developers form a small 
+pyMOR's main developers form a small
 [group](https://github.com/orgs/pymor/people?query=role:owner+)
 of developers which, apart from making contributions to pyMOR,
 have the job of guiding and maintaining the future development of
-pyMOR. They are the only persons with direct push acces to pyMOR's
-main repository and have administrative priviliges over the
+pyMOR. They are the only persons with direct push access to pyMOR's
+main repository and have administrative privileges over the
 [pyMOR organization](https://github.com/pymor) on GitHub.
 
 As pyMOR is an open project, everyone is invited to step up to
@@ -119,8 +119,8 @@ in discussions on the mailing list and through GitHub. The applicant
 should be able to commit to the project for a time period of at
 least one year.
 
-Main developers will be automatically retired (losing all priviliges)
+Main developers will be automatically retired (losing all privileges)
 if they have not shown any relevant activity over a period of one
-year. Under special circumstances, the main developers 
+year. Under special circumstances, the main developers
 (excluding the developer in question) may decide by simple majority
 vote to keep the developer in the group of main developers.
